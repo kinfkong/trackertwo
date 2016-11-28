@@ -13,13 +13,17 @@ int transmittingData = 1;
 long lastPublish = 0;
 
 // How many minutes minimum between publishes? 10+ recommended!
-int delayMinutes = 10;
+int delayMinutes = 2;
 
 // Threshold to trigger a publish
 // 9000 is VERY sensitive, 12000 will still detect small bumps
 int accelThreshold = 12000;
 
 unsigned long lastTime = 0;
+
+bool gpsserialdebug = true;
+
+int serial1Avail = 0;
 
 // Creating an AssetTracker named 't' for us to reference
 AssetTracker t = AssetTracker();

@@ -20,19 +20,23 @@ void setup() {
 
     // Opens up a Serial port so you can listen over USB
     Serial.begin(9600);
+    // this appears to be the serial port that the GPS is usinging
     Serial1.begin(9600);
 
     // These three functions are useful for remote diagnostics. Read more below.
     Particle.function("tmode", transmitMode);
     Particle.function("gps", gpsPublish);
     Particle.function("aThresh",accelThresholder);
+
+    pinMode(D7, OUTPUT);
+     digitalWrite(D7, HIGH);  //turn on built in led
 }
 
 // loop() runs continuously
 void loop() {
     // You'll need to run this every loop to capture the GPS output
     t.updateGPS();
-    // digitalWrite(D7, LOW);  //turn off built in led
+
 
         // Check if there's been a big acceleration
 
@@ -58,7 +62,7 @@ void loop() {
             Particle.publish("A", pubAccel, 60, PRIVATE);
         }
 
-    }  
+    }
 
     // if the current time - the last time we published is greater than your set delay...
     if(millis()-lastPublish > delayMinutes*60*1000){
@@ -81,7 +85,9 @@ void loop() {
                 Particle.publish("G", t.readLatLon(), 60, PRIVATE);
             }
             // but always report the data over serial for local development
+            Serial.print("in the if gpsfix condtion");
             Serial.println(t.readLatLon());
+            digitalWrite(D7, LOW);   // turn off the led on the fix
         }
     }
 
@@ -112,9 +118,16 @@ void loop() {
     }
 
    //debug the gps serial
-   while (Serial1.available()){
-        Serial.print(char(Serial1.read()));
+
+   while (Serial1.available() && gpsserialdebug ){
+      //  Serial.print(char(Serial1.read()));
+        //serial1Avail = 1;
+    // atempt to echo from serial1 to serial
+       char c = Serial1.read();
+        Serial.write(c);    
+
     }
+
 }
 
 // Remotely change the trigger threshold!
