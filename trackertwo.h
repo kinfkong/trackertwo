@@ -1,6 +1,6 @@
 //defines
 #define FILENAME "trackertwo.cpp"
-#define MYVERSION "0.0.2. build 1127.2254"
+#define MYVERSION "0.03.2build 1128.1411"
 
 //declarations
 // Set whether you want the device to publish data to the internet by default here.
@@ -22,6 +22,7 @@ int accelThreshold = 12000;
 unsigned long lastTime = 0;
 
 bool gpsserialdebug = true;
+bool mydebug = true;
 
 int serial1Avail = 0;
 
@@ -32,6 +33,5 @@ AssetTracker t = AssetTracker();
 FuelGauge fuel;
 
 // Prototypes
- int accelThresholder(String command);
  int transmitMode(String command);
  int gpsPublish(String command);

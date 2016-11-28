@@ -13,56 +13,25 @@ reading the battery level, and manually requesting a GPS reading.
 
 void setup() {
     t.begin();
-
-    // Enable the GPS module. Defaults to off to save power.
-    // Takes 1.5s or so because of delays.
     t.gpsOn();
-
     // Opens up a Serial port so you can listen over USB
     Serial.begin(9600);
-    // this appears to be the serial port that the GPS is usinging
-    Serial1.begin(9600);
+    // Serial1.begin(9600);  //NOTE:   it looks like I dont need this anymore
 
     // These three functions are useful for remote diagnostics. Read more below.
     Particle.function("tmode", transmitMode);
     Particle.function("gps", gpsPublish);
-    Particle.function("aThresh",accelThresholder);
+
 
     pinMode(D7, OUTPUT);
-     digitalWrite(D7, HIGH);  //turn on built in led
+    digitalWrite(D7, HIGH);  //turn on built in led
 }
 
-// loop() runs continuously
+
 void loop() {
     // You'll need to run this every loop to capture the GPS output
     t.updateGPS();
 
-
-        // Check if there's been a big acceleration
-
-
-    if(t.readXYZmagnitude() > accelThreshold ){
-        // Create a nice string with commas between x,y,z
-        String pubAccel = String::format("%d,%d,%d",t.readX(),t.readY(),t.readZ());
-
-
-        // Send that acceleration to the serial port where it can be read by USB
-        Serial.print("pubAccel"); Serial.println(pubAccel);
-        Serial.println(t.readXYZmagnitude());
-       // digitalWrite(D7, HIGH);  //tunr on built in led
-        Serial.println("  x  y  z ");
-        Serial.print("  ");
-        Serial.print(t.readX());  Serial.print(" ");
-        Serial.print(t.readY());  Serial.print(" ");
-        Serial.print(t.readZ());  Serial.print(" ");
-
-        // If it's set to transmit AND it's been at least delayMinutes since the last one...
-        if(transmittingData && ((millis()-lastPublish) > (delayMinutes*60*1000))){
-            lastPublish = millis();
-            Particle.publish("A", pubAccel, 60, PRIVATE);
-        }
-
-    }
 
     // if the current time - the last time we published is greater than your set delay...
     if(millis()-lastPublish > delayMinutes*60*1000){
@@ -92,27 +61,12 @@ void loop() {
     }
 
     // 30 second serial logger
-    if(millis()%5000 == 0 ) {
+    if(millis()%5000 == 0 && mydebug ) {
        Serial.print("doing the 5 second  loop:  ");
-        //Serial.println(t.readXYZmagnitude());
-/*
-        Serial.print( "SoC: ");
-        Serial.print( fuel.getSoC() );
-        Serial.print( " VCell: ");
-        Serial.println( fuel.getVCell() );
-*/
-
         Serial.print("GPS FIX: ");
-        Serial.println( t.gpsFix() );
-
+        Serial.print( t.gpsFix() );
+        Serial.print("   ");
         Serial.println(t.readLatLon());
-
-        Serial.println("  x  y  z ");
-        Serial.print(t.readX());  Serial.print(" ");
-        Serial.print(t.readY());  Serial.print(" ");
-        Serial.print(t.readZ());  Serial.print(" ");
-
-
 
 
     }
@@ -120,21 +74,18 @@ void loop() {
    //debug the gps serial
 
    while (Serial1.available() && gpsserialdebug ){
-      //  Serial.print(char(Serial1.read()));
+        Serial.print(char(Serial1.read()));
+      //  Serial.print("k");
         //serial1Avail = 1;
     // atempt to echo from serial1 to serial
-       char c = Serial1.read();
-        Serial.write(c);    
+       //char c = Serial1.read();
+        //Serial.write(c);
 
     }
 
 }
 
-// Remotely change the trigger threshold!
-int accelThresholder(String command){
-    accelThreshold = atoi(command);
-    return 1;
-}
+
 
 // Allows you to remotely change whether a device is publishing to the cloud
 // or is only reporting data over Serial. Saves data when using only Serial!
