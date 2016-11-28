@@ -1,6 +1,7 @@
 //defines
 #define FILENAME "trackertwo.cpp"
-#define MYVERSION "0.03.2build 1128.1411"
+#define MYVERSION "0.03.0"
+#define MYBUILD "1128.1503"
 
 //declarations
 // Set whether you want the device to publish data to the internet by default here.
@@ -25,6 +26,8 @@ bool gpsserialdebug = true;
 bool mydebug = true;
 
 int serial1Avail = 0;
+
+int gpsloctime = 0;
 
 // Creating an AssetTracker named 't' for us to reference
 AssetTracker t = AssetTracker();

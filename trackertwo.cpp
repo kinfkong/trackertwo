@@ -6,10 +6,10 @@ registers 3 Particle.functions for changing whether it publishes,
 reading the battery level, and manually requesting a GPS reading.
 ---------------------------------------------------------------*/
 
-// Getting the library
+// includes
 #include "lib/AssetTracker/firmware/AssetTracker.h"
-#include "trackertwo.h"
-
+ #include "trackertwo.h"
+ #include "lib/streaming/firmware/spark-streaming.h"
 
 void setup() {
     t.begin();
@@ -32,17 +32,20 @@ void loop() {
     // You'll need to run this every loop to capture the GPS output
     t.updateGPS();
 
+    //FIRST GPS LOC
+    if(t.gpsFix() && gpsloctime == 0 ) {
+      gpsloctime = millis()/1000;
+      digitalWrite(D7, LOW);
+    }
 
     // if the current time - the last time we published is greater than your set delay...
     if(millis()-lastPublish > delayMinutes*60*1000){
         // Remember when we published
         lastPublish = millis();
 
-        //String pubAccel = String::format("%d,%d,%d",t.readX(),t.readY(),t.readZ());
-        //Serial.println(pubAccel);
-        //Particle.publish("A", pubAccel, 60, PRIVATE);
 
         // Dumps the full NMEA sentence to serial in case you're curious
+        Serial << millis()/1000 << "  ";
         Serial.println(t.preNMEA());
 
         // GPS requires a "fix" on the satellites to give good data,
@@ -60,14 +63,9 @@ void loop() {
         }
     }
 
-    // 30 second serial logger
+    // debug logger
     if(millis()%5000 == 0 && mydebug ) {
-       Serial.print("doing the 5 second  loop:  ");
-        Serial.print("GPS FIX: ");
-        Serial.print( t.gpsFix() );
-        Serial.print("   ");
-        Serial.println(t.readLatLon());
-
+       Serial << endl << MYBUILD << " 5s Belt " << millis()/1000 << "  GPS FIX TIME: " << gpsloctime  << "  " << t.readLatLon() << endl;
 
     }
 
