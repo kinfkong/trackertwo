@@ -11,6 +11,7 @@ reading the battery level, and manually requesting a GPS reading.
  #include "trackertwo.h"
  #include "lib/streaming/firmware/spark-streaming.h"
 
+
 void setup() {
     t.begin();
     t.gpsOn();
@@ -55,6 +56,8 @@ void loop() {
             if(transmittingData){
                 // Short publish names save data!
                 Particle.publish("G", t.readLatLon(), 60, PRIVATE);
+                Particle.publish("GLAT", String(t.readLatDeg()), 60, PRIVATE);
+                Particle.publish("GLON", String(t.readLonDeg()), 60, PRIVATE);
             }
             // but always report the data over serial for local development
             Serial.print("in the if gpsfix condtion");
@@ -66,6 +69,9 @@ void loop() {
     // debug logger
     if(millis()%5000 == 0 && mydebug ) {
        Serial << endl << MYBUILD << " 5s Belt " << millis()/1000 << "  GPS FIX TIME: " << gpsloctime  << "  " << t.readLatLon() << endl;
+       if(gpsloctime > 0 ) {
+         Serial << "Lat: " << String(t.readLatDeg()) << " LON " << String(t.readLonDeg()) << endl;
+       }
 
     }
 
