@@ -36,7 +36,7 @@ void loop() {
 
         // Check if there's been a big acceleration
 
-    /*
+
     if(t.readXYZmagnitude() > accelThreshold ){
         // Create a nice string with commas between x,y,z
         String pubAccel = String::format("%d,%d,%d",t.readX(),t.readY(),t.readZ());
@@ -58,7 +58,7 @@ void loop() {
             Particle.publish("A", pubAccel, 60, PRIVATE);
         }
 
-    }  */
+    }  
 
     // if the current time - the last time we published is greater than your set delay...
     if(millis()-lastPublish > delayMinutes*60*1000){
