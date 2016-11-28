@@ -87,16 +87,17 @@ void loop() {
 
     // 30 second serial logger
     if(millis()%5000 == 0 ) {
-       Serial.print("doing the 30 loop readXYZmagnitude ");
+       Serial.print("doing the 5 second  loop:  ");
         //Serial.println(t.readXYZmagnitude());
-
+/*
         Serial.print( "SoC: ");
         Serial.print( fuel.getSoC() );
         Serial.print( " VCell: ");
         Serial.println( fuel.getVCell() );
+*/
 
         Serial.print("GPS FIX: ");
-        Serial.print( t.gpsFix() );
+        Serial.println( t.gpsFix() );
 
         Serial.println(t.readLatLon());
 
