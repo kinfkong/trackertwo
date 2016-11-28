@@ -10,6 +10,7 @@ reading the battery level, and manually requesting a GPS reading.
 #include "lib/AssetTracker/firmware/AssetTracker.h"
  #include "trackertwo.h"
  #include "lib/streaming/firmware/spark-streaming.h"
+ #include "lib/HttpClient/firmware/HttpClient.h"
 
 
 void setup() {
