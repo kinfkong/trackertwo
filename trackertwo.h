@@ -30,5 +30,4 @@ FuelGauge fuel;
 // Prototypes
  int accelThresholder(String command);
  int transmitMode(String command);
- int batteryStatus(String command);
  int gpsPublish(String command);

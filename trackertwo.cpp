@@ -24,7 +24,6 @@ void setup() {
 
     // These three functions are useful for remote diagnostics. Read more below.
     Particle.function("tmode", transmitMode);
-    Particle.function("batt", batteryStatus);
     Particle.function("gps", gpsPublish);
     Particle.function("aThresh",accelThresholder);
 }
@@ -142,23 +141,4 @@ int gpsPublish(String command){
         return 1;
     }
     else { return 0; }
-}
-
-// Lets you remotely check the battery status by calling the function "batt"
-// Triggers a publish with the info (so subscribe or watch the dashboard)
-// and also returns a '1' if there's >10% battery left and a '0' if below
-int batteryStatus(String command){
-    // Publish the battery voltage and percentage of battery remaining
-    // if you want to be really efficient, just report one of these
-    // the String::format("%f.2") part gives us a string to publish,
-    // but with only 2 decimal points to save space
-    Particle.publish("B",
-          "v:" + String::format("%f.2",fuel.getVCell()) +
-          ",c:" + String::format("%f.2",fuel.getSoC()),
-          60, PRIVATE
-    );
-    // if there's more than 10% of the battery left, then return 1
-    if(fuel.getSoC()>10){ return 1;}
-    // if you're running out of battery, return 0
-    else { return 0;}
 }
