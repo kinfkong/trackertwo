@@ -7,10 +7,11 @@ reading the battery level, and manually requesting a GPS reading.
 ---------------------------------------------------------------*/
 
 // includes
-#include "lib/AssetTracker/firmware/AssetTracker.h"
- #include "trackertwo.h"
+#include "application.h"
+ #include "lib/AssetTracker/firmware/AssetTracker.h"
  #include "lib/streaming/firmware/spark-streaming.h"
  #include "lib/HttpClient/firmware/HttpClient.h"
+#include "trackertwo.h"
 
 
 void setup() {
@@ -27,6 +28,10 @@ void setup() {
 
     pinMode(D7, OUTPUT);
     digitalWrite(D7, HIGH);  //turn on built in led
+
+    request.port = 80;
+    request.hostname = "kb-dsp-server-dev.herokuapp.com";
+    request.path = "/api/v1/drones/583bde88418b863d043d08eb";
 }
 
 
@@ -59,6 +64,16 @@ void loop() {
                 Particle.publish("G", t.readLatLon(), 60, PRIVATE);
                 Particle.publish("GLAT", String(t.readLatDeg()), 60, PRIVATE);
                 Particle.publish("GLON", String(t.readLonDeg()), 60, PRIVATE);
+
+                String b = "{\"lat\":";
+                b.concat(String(t.readLatDeg()));
+                b.concat(",\"lng\":");
+                b.concat(String(t.readLonDeg()));
+                b.concat("}");
+                request.body = b;
+                http.put(request, response, headers);
+                Serial << "Fnc call: http body: " << request.body << endl;
+
             }
             // but always report the data over serial for local development
             Serial.print("in the if gpsfix condtion");
@@ -105,6 +120,17 @@ int transmitMode(String command){
 int gpsPublish(String command){
     if(t.gpsFix()){
         Particle.publish("G", t.readLatLon(), 60, PRIVATE);
+
+        //request.body = "{\"lat\":44,\"lng\":-85}";
+        String b = "{\"lat\":";
+        b.concat(String(t.readLatDeg()));
+        b.concat(",\"lng\":");
+        b.concat(String(t.readLonDeg()));
+        b.concat("}");
+        request.body = b;
+        http.put(request, response, headers);
+        Serial << "Fnc call: http body: " << request.body << endl;
+
 
         // uncomment next line if you want a manual publish to reset delay counter
         // lastPublish = millis();

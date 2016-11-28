@@ -1,7 +1,7 @@
 //defines
 #define FILENAME "trackertwo.cpp"
-#define MYVERSION "0.03.0"
-#define MYBUILD "1128.1551"
+#define MYVERSION "0.04.0"
+#define MYBUILD "1128.1712"
 
 //declarations
 // Set whether you want the device to publish data to the internet by default here.
@@ -29,8 +29,17 @@ int serial1Avail = 0;
 
 int gpsloctime = 0;
 
+http_header_t headers[] = {
+      { "Content-Type", "application/json" },
+    { NULL, NULL } // NOTE: Always terminate headers will NULL
+};
+http_request_t request;
+http_response_t response;
+
 // Creating an AssetTracker named 't' for us to reference
 AssetTracker t = AssetTracker();
+
+ HttpClient http;
 
 // A FuelGauge named 'fuel' for checking on the battery state
 FuelGauge fuel;
