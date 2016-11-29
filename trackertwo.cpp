@@ -8,7 +8,7 @@
 /*  These includes are setup for local compiling looking for a lib folder      *
 * if you are compiling on the web IDE you sould comment out this whole         *
 * include block and add:  AssetTracker, Steaming, and HTTPClient using the web *
-* IDE  
+* IDE
 */
 
 #include "application.h"
