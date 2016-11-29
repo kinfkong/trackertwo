@@ -1,17 +1,21 @@
 /* -----------------------------------------------------------
-This example shows a lot of different features. As configured here
-it'll check for a good GPS fix every 10 minutes and publish that data
-if there is one. If not, it'll save you data by staying quiet. It also
-registers 3 Particle.functions for changing whether it publishes,
-reading the battery level, and manually requesting a GPS reading.
+* Kyle Bowerman 11.28.2016
+* taken mostly from: https://github.com/spark/AssetTracker
+* Wishlist
+
 ---------------------------------------------------------------*/
 
-// includes
+/*  These includes are setup for local compiling looking for a lib folder      *
+* if you are compiling on the web IDE you sould comment out this whole         *
+* include block and add:  AssetTracker, Steaming, and HTTPClient using the web *
+* IDE  
+*/
+
 #include "application.h"
  #include "lib/AssetTracker/firmware/AssetTracker.h"
  #include "lib/streaming/firmware/spark-streaming.h"
  #include "lib/HttpClient/firmware/HttpClient.h"
-#include "trackertwo.h"
+ #include "trackertwo.h"
 
 
 void setup() {
