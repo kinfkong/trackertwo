@@ -1,16 +1,15 @@
 
-## trackertwo
+## Trackertwo
 
-This is a device tracking implementation of Particle.io 's  [Asset Tracker](https://github.com/spark/AssetTracker) for tracking drone movement.  It uses the physical [Asset Tracker](https://www.particle.io/products/hardware/asset-tracker) hardware when using the particle electron and uses a standalone [Adafruit Ultimate GPS](https://www.adafruit.com/product/746).   The goal of this project is to be able to use the same code base for both hardware platforms.
+This is a device tracking implementation of Particle.io 's  [Asset Tracker](https://github.com/spark/AssetTracker) for tracking drone movement.  It uses the physical [Asset Tracker](https://www.particle.io/products/hardware/asset-tracker) hardware when using the particle electron and uses a standalone [Adafruit Ultimate GPS](https://www.adafruit.com/product/746) when run on the Photon.   The goal of this project is to be able to use the same code base for both hardware platforms.  This code is written to run the Particle hardware and can be compiled on a new project at [build.particle.io](build.particle.io).  You do not need to own any hardware to compile this code on the particle ide but you will not be able to run it.
 
 
 
 ## Usage
 
-The includes in the .cpp are setup for local compiling looking for a lib folder      
-in the root. If you are compiling on [Particle the web IDE](build.particle.io)
-you should comment out this whole include block and add: AssetTracker, Steaming,
-and HTTPClient using the web IDE  
+The include section in the trackertwo.cpp are setup for local compiling which is looking for a lib folder in the root.
+If you are compiling on [Particle the web IDE](build.particle.io)
+you should comment out this whole include block and add: AssetTracker, Steaming, and HTTPClient when using the web IDE.  Click on the Bookmark icon in the left panel to add libraries.
 
 ## Wish list
 1.  The http request.body in line 72 - 76 is repeated in the gpsPublish() function on line 129-134,  break this out into a separate  function
