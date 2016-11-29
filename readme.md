@@ -15,7 +15,7 @@ and HTTPClient using the web IDE
 ## Wish list
 1.  The http request.body in line 72 - 76 is repeated in the gpsPublish() function on line 129-134,  break this out into a separate  function
 2.  The function create above should take in key value pairs and generate the json payload as a string.  We will frequently be adding more data here so we will need an easy way to build this payload.
-3.  
+3. The current code base updates the location (request.put) every __delayMinutes__ which is fine for the photon but will get expensive for the electron.  The goal would be to store the previous lat/lon every time we call the __gpsPublish()__, compare with the new lat/lon, calcualte the distance.   If the distance is greater than distThreshold then do the update put.
 
 
 ## Photon wiring
@@ -39,7 +39,7 @@ A0| - | D0 | -
 
 Uses the Asset shield.  Not this shield has the LIS3DH 3 axis accelerometer built in.   This is not built into the GPS itself so  when using the Photon  the accelerometer is not available.
 
-
+![](http://kbowerma.github.io/images/AssetTrackers.jpg)
 
 
 ### Links
