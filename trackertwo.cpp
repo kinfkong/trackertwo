@@ -7,18 +7,21 @@
 
 /*  These includes are setup for local compiling looking for a lib folder      *
 * if you are compiling on the web IDE you sould comment out this whole         *
-* include block and add:  AssetTracker, Steaming, and HTTPClient using the web *
+* include block and add:  AssetTracker, Steaming, HTTPClient and SparkJson using the web *
 * IDE
 */
 
 #include "application.h"
- #include "lib/AssetTracker/firmware/AssetTracker.h"
- #include "lib/streaming/firmware/spark-streaming.h"
- #include "lib/HttpClient/firmware/HttpClient.h"
- #include "trackertwo.h"
+
+#include "lib/AssetTracker/firmware/AssetTracker.h"
+#include "lib/streaming/firmware/spark-streaming.h"
+#include "lib/HttpClient/firmware/HttpClient.h"
+#include "lib/SparkJson/firmware/SparkJson.h"
+
+#include "trackertwo.h"
 #include "PayloadBuilder.h"
 
-int gpsToJson(AssetTracker&);
+int sendGps(AssetTracker&);
 
 void setup() {
     t.begin();
@@ -71,8 +74,8 @@ void loop() {
                 Particle.publish("GLAT", String(t.readLatDeg()), 60, PRIVATE);
                 Particle.publish("GLON", String(t.readLonDeg()), 60, PRIVATE);
 
-               //request.body = "{\"lat\":44,\"lng\":-85}";
-		gpsToJson(t);
+                // send the request with payload like: "{\"lat\":44,\"lng\":-85}";
+		sendGps(t);
             }
             // but always report the data over serial for local development
             Serial.print("in the if gpsfix condtion");
@@ -120,8 +123,8 @@ int gpsPublish(String command){
     if(t.gpsFix()){
         Particle.publish("G", t.readLatLon(), 60, PRIVATE);
 	
-        //request.body = "{\"lat\":44,\"lng\":-85}";
-	gpsToJson(t);
+        // send the gps to the server
+	sendGps(t);
 
         // uncomment next line if you want a manual publish to reset delay counter
         // lastPublish = millis();
@@ -130,8 +133,8 @@ int gpsPublish(String command){
     else { return 0; }
 }
 
-// converts the gps to json payload and set to the request body and output to Serial
-int gpsToJson(AssetTracker& t) {
+// converts the gps to json payload and set to the request body, and send it, then output to Serial
+int sendGps(AssetTracker& t) {
     // creates the payload builder
     PayloadBuilder builder;
 
@@ -144,7 +147,11 @@ int gpsToJson(AssetTracker& t) {
     
     // set to the request body and output to Serial
     request.body = b;
+
+    // send the request
     http.put(request, response, headers);
+
+    // output to the Serial
     Serial << "Fnc call: http body: " << request.body << endl;
 
     return 1;

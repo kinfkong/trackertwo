@@ -1,14 +1,20 @@
+/**
+ * TCSDEVELOPER 11.28.2016
+ */
+
 #ifndef __PAYLOAD_BUILDER__
 #define __PAYLOAD_BUILDER__
 
 
-#include "lib/SparkJson/firmware/SparkJson.h"
 
 // represents the buffer size
 #define PAYLOAD_BUFFER_SIZE 512
 
 /**
  * This represents the wrapper for produce the json payload.
+ *
+ * @author TCSDEVELOPER
+ * @version 1.0
  */
 class PayloadBuilder {
 public:
