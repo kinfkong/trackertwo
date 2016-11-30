@@ -15,8 +15,10 @@
  #include "lib/AssetTracker/firmware/AssetTracker.h"
  #include "lib/streaming/firmware/spark-streaming.h"
  #include "lib/HttpClient/firmware/HttpClient.h"
+#include "lib/SparkJson/firmware/SparkJson.h"
  #include "trackertwo.h"
 
+int gpsToJson(AssetTracker&);
 
 void setup() {
     t.begin();
@@ -69,15 +71,8 @@ void loop() {
                 Particle.publish("GLAT", String(t.readLatDeg()), 60, PRIVATE);
                 Particle.publish("GLON", String(t.readLonDeg()), 60, PRIVATE);
 
-                String b = "{\"lat\":";
-                b.concat(String(t.readLatDeg()));
-                b.concat(",\"lng\":");
-                b.concat(String(t.readLonDeg()));
-                b.concat("}");
-                request.body = b;
-                http.put(request, response, headers);
-                Serial << "Fnc call: http body: " << request.body << endl;
-
+               //request.body = "{\"lat\":44,\"lng\":-85}";
+		gpsToJson(t);
             }
             // but always report the data over serial for local development
             Serial.print("in the if gpsfix condtion");
@@ -124,17 +119,9 @@ int transmitMode(String command){
 int gpsPublish(String command){
     if(t.gpsFix()){
         Particle.publish("G", t.readLatLon(), 60, PRIVATE);
-
+	
         //request.body = "{\"lat\":44,\"lng\":-85}";
-        String b = "{\"lat\":";
-        b.concat(String(t.readLatDeg()));
-        b.concat(",\"lng\":");
-        b.concat(String(t.readLonDeg()));
-        b.concat("}");
-        request.body = b;
-        http.put(request, response, headers);
-        Serial << "Fnc call: http body: " << request.body << endl;
-
+	gpsToJson(t);
 
         // uncomment next line if you want a manual publish to reset delay counter
         // lastPublish = millis();
@@ -142,3 +129,15 @@ int gpsPublish(String command){
     }
     else { return 0; }
 }
+
+int gpsToJson(AssetTracker& t) {
+    PayloadBuilder builder;
+    builder.addKeyValue("lat", t.readLatDeg());
+    builder.addKeyValue("lng", t.readLonDeg());
+    String b = builder.toString();
+    request.body = b;
+    http.put(request, response, headers);
+    Serial << "Fnc call: http body: " << request.body << endl;
+    return 1;
+}
+

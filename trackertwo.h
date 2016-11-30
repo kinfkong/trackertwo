@@ -47,3 +47,30 @@ FuelGauge fuel;
 // Prototypes
  int transmitMode(String command);
  int gpsPublish(String command);
+
+#ifndef __PAYLOAD_BUILDER__
+#define __PAYLOAD_BUILDER__
+
+class PayloadBuilder {
+public:
+    PayloadBuilder() {
+        _jsonObj = &_jsonBuffer.createObject();
+    }
+
+    String toString() {
+        _jsonObj->printTo(_buf, sizeof(_buf));
+        return String(_buf);
+    }
+
+    template <typename T>
+    void addKeyValue(const char* key, T value) {
+        (*_jsonObj)[key] = value;
+    }
+
+private:
+    char _buf[4096];
+    JsonObject* _jsonObj;
+    StaticJsonBuffer<4096> _jsonBuffer;
+};
+
+#endif
