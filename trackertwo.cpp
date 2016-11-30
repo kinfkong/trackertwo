@@ -15,8 +15,8 @@
  #include "lib/AssetTracker/firmware/AssetTracker.h"
  #include "lib/streaming/firmware/spark-streaming.h"
  #include "lib/HttpClient/firmware/HttpClient.h"
-#include "lib/SparkJson/firmware/SparkJson.h"
  #include "trackertwo.h"
+#include "PayloadBuilder.h"
 
 int gpsToJson(AssetTracker&);
 
@@ -130,14 +130,23 @@ int gpsPublish(String command){
     else { return 0; }
 }
 
+// converts the gps to json payload and set to the request body and output to Serial
 int gpsToJson(AssetTracker& t) {
+    // creates the payload builder
     PayloadBuilder builder;
-    builder.addKeyValue("lat", t.readLatDeg());
-    builder.addKeyValue("lng", t.readLonDeg());
+
+    // add the lat, lng to the builder
+    builder["lat"] = t.readLatDeg();
+    builder["lng"] = t.readLonDeg();
+
+    // generate the json string
     String b = builder.toString();
+    
+    // set to the request body and output to Serial
     request.body = b;
     http.put(request, response, headers);
     Serial << "Fnc call: http body: " << request.body << endl;
+
     return 1;
 }
 
